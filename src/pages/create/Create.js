@@ -10,9 +10,9 @@ function Create() {
     const [newIngredient, setNewIngredient] = useState('');
     const [ingredients, setIngredients] = useState([]);
     const ingredientInput = useRef(null);
-
-    const { postData, data } = useFetch('http://localhost:300/recipes', 'POST');
     const history = useHistory();
+
+    const { postData, data, error } = useFetch('http://localhost:3000/recipes', 'POST');
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -22,8 +22,9 @@ function Create() {
     const handleAdd = (e) => {
         e.preventDefault();
         const ing = newIngredient.trim();
+
         if (ing && !ingredients.includes(ing)) {
-            setIngredients(prevIngredients => [...prevIngredients, newIngredient]);
+            setIngredients(prevIngredients => [...prevIngredients, ing]);
         }
         setNewIngredient('');
         ingredientInput.current.focus();
@@ -33,11 +34,12 @@ function Create() {
         if (data) {
             history.push('/');
         }
-    }, [data, history])
+    }, [data])
 
     return (
         <div className="create">
             <h2 className="page-title">Add a New Recipe</h2>
+
             <form onSubmit={handleSubmit}>
                 <label>
                     <span>Recipe title:</span>
@@ -48,9 +50,9 @@ function Create() {
                         required
                     />
                 </label>
-                
+
                 <label>
-                    <span>Recipe Ingredients:</span>
+                    <span>Recipe ingredients:</span>
                     <div className="ingredients">
                         <input
                             type="text"
@@ -61,11 +63,10 @@ function Create() {
                         <button onClick={handleAdd} className="btn">add</button>
                     </div>
                 </label>
-
                 <p>Current ingredients: {ingredients.map(i => <em key={i}>{i}, </em>)}</p>
 
                 <label>
-                    <span>Recipe Method:</span>
+                    <span>Recipe method:</span>
                     <textarea
                         onChange={(e) => setMethod(e.target.value)}
                         value={method}
@@ -83,7 +84,9 @@ function Create() {
                     />
                 </label>
 
-                <button className="btn">submit</button>
+                <button className="btn">
+                    submit
+                </button>
             </form>
         </div>
     )
